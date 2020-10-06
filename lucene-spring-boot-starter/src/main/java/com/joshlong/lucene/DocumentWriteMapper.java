@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 
-interface DocumentWriteMapper<T> {
+public interface DocumentWriteMapper<T> {
 
 	@Data
 	@RequiredArgsConstructor
