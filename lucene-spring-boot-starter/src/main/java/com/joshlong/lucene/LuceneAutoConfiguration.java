@@ -24,68 +24,25 @@ import java.util.Map;
 @Configuration
 class LuceneAutoConfiguration {
 
-
-    @Bean
-    LuceneTemplate luceneTemplate(
-            @Value("${search.index-directory-resource}") Resource indexDirectory, Analyzer analyzer) throws Exception {
-        return new LuceneTemplate(analyzer, "description", FSDirectory.open(indexDirectory.getFile().toPath()));
-    }
-
-   /* private Collection<Map<String,String>> loadPodcasts() {
-        var rt = new RestTemplateBuilder().build();
-        var responseEntity = rt.exchange(URI.create("http://bootifulpodcast.fm/podcasts.json"), HttpMethod.GET, null,
-                new ParameterizedTypeReference<Collection<Podcast>>() {
-                });
-        Assert.isTrue(responseEntity.getStatusCode().is2xxSuccessful(), () -> "the HTTP response should be 200x");
-        return responseEntity.getBody();
-    }*/
-/*
-
-
+	@Bean
+	LuceneTemplate luceneTemplate(@Value("${search.index-directory-resource}") Resource indexDirectory,
+			Analyzer analyzer) throws Exception {
+		return new LuceneTemplate(analyzer, "description", FSDirectory.open(indexDirectory.getFile().toPath()));
+	}
 
 	@Bean
-	ApplicationListener<ApplicationReadyEvent> ready(LuceneTemplate template) {
-		return event -> {
-			log.info("starting...");
-			Iterable<Podcast> all = loadPodcasts();
-			template.write(all, podcast -> {
-				var term = new Term("uid", podcast.getUid());
-				var result = new Document();
-				result.add(new StringField("id", Long.toString(podcast.getId()), Field.Store.YES));
-				result.add(new StringField("uid", podcast.getUid(), Field.Store.YES));
-				result.add(new TextField("title", podcast.getTitle(), Field.Store.YES));
-				result.add(new TextField("description", html2text(podcast.getDescription()), Field.Store.YES));
-				result.add(new LongPoint("time", podcast.getDate().getTime()));
-				return new DocumentWriteMapper.DocumentWrite(term, result);
-			});
+	Analyzer analyzer() {
+		return new Analyzer() {
 
-			var podcastList = template.search("Spring", 1000,
-					document -> Collections.singletonMap("uid", document.get("uid")));
-			for (var uid : podcastList)
-				log.info("uid:" + uid);
-
+			@Override
+			protected TokenStreamComponents createComponents(String fieldName) {
+				var tokenizer = new StandardTokenizer();
+				tokenizer.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+				var filters = new StopFilter(new ASCIIFoldingFilter(new LowerCaseFilter(tokenizer)),
+						CharArraySet.EMPTY_SET);
+				return new TokenStreamComponents(tokenizer, filters);
+			}
 		};
 	}
-
-	private static String html2text(String html) {
-		return Jsoup.parse(html).text();
-	}
-
-*/
-
-    @Bean
-    Analyzer analyzer() {
-        return new Analyzer() {
-
-            @Override
-            protected TokenStreamComponents createComponents(String fieldName) {
-                var tokenizer = new StandardTokenizer();
-                tokenizer.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
-                var filters = new StopFilter(new ASCIIFoldingFilter(new LowerCaseFilter(tokenizer)),
-                        CharArraySet.EMPTY_SET);
-                return new TokenStreamComponents(tokenizer, filters);
-            }
-        };
-    }
 
 }
