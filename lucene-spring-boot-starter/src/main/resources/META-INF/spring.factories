@@ -1,0 +1,5 @@
+
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#  com.joshlong.lucene.JwtTokenAutoConfiguration,\
+#  com.joshlong.lucene.WebmvcTokenEndpointAutoConfiguration,\
+#  com.joshlong.lucene.WebfluxTokenEndpointAutoConfiguration

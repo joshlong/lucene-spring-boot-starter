@@ -1,0 +1,159 @@
+package com.joshlong.lucene;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+@Log4j2
+class LuceneTemplate implements LuceneOperations {
+
+    private final Analyzer analyzer;
+
+    private final Object monitor = new Object();
+
+    private final Directory indexDirectory;
+
+    private final String defaultIndexField;
+
+    private final AtomicReference<IndexReader> reader = new AtomicReference<>();
+
+    private final AtomicReference<IndexSearcher> searcher = new AtomicReference<>();
+
+    LuceneTemplate(Analyzer analyzer, String defaultIndexField, Directory directory) {
+        this.analyzer = analyzer;
+        this.indexDirectory = directory;
+        this.defaultIndexField = defaultIndexField;
+        this.write(iw -> log.debug("initializing Lucene index in [" + directory.toString() + "]."));
+    }
+
+    @SneakyThrows
+    private IndexReader buildIndexReader() {
+        return DirectoryReader.open(this.indexDirectory);
+    }
+
+    @SneakyThrows
+    private IndexWriter buildIndexWriter() {
+        var iwc = new IndexWriterConfig(analyzer);
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        return new IndexWriter(this.indexDirectory, iwc);
+    }
+
+    private IndexSearcher buildIndexSearcher(IndexReader reader) {
+        return new IndexSearcher(reader);
+    }
+
+    @Override
+    @SneakyThrows
+    public <T> void write(Iterable<T> listOfItems, DocumentWriteMapper<T> mapper) {
+        Assert.notNull(listOfItems, () -> "the collection should be non-null");
+        this.write(iw -> {
+            for (var item : listOfItems) {
+                var write = mapper.map(item);
+                iw.updateDocument(write.getTerm(), write.getDocument());
+            }
+        });
+    }
+
+    @Override
+    public void write(IndexWriterCallback callback) {
+        try (var iw = buildIndexWriter()) {
+            callback.executeWithIndexWriter(iw);
+        }
+        catch (Exception exception) {
+            ReflectionUtils.rethrowRuntimeException(exception);
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public <T> List<T> search(Query query, int maxResults, DocumentSearchMapper<T> mapper) {
+        var search = this.search(query, maxResults);
+        var results = new ArrayList<T>();
+        for (var sd : search.scoreDocs) {
+            var doc = searcher.get().doc(sd.doc);
+            var map = mapper.map(doc);
+            results.add(map);
+        }
+        return results;
+    }
+
+    @SneakyThrows
+    public TopDocs search(Query q, int max) {
+        if (this.reader.get() == null) {
+            synchronized (this.monitor) {
+                this.reader.set(buildIndexReader());
+                this.searcher.set(buildIndexSearcher(this.reader.get()));
+            }
+        }
+        var indexSearcher = this.searcher.get();
+        return indexSearcher.search(q, max);
+    }
+
+    @Override
+    @SneakyThrows
+    public <T> List<T> search(String query, int max, DocumentSearchMapper<T> mapper) {
+        return search(buildQueryParserFor(this.defaultIndexField, query), max, mapper);
+    }
+
+    private Query buildQueryParserFor(String field, String queryStr) throws Exception {
+        var qp = new QueryParser(field, analyzer);
+        return qp.parse(queryStr);
+    }
+}
+
+interface LuceneOperations {
+
+    void write(IndexWriterCallback writer);
+
+    <T> void write(Iterable<T> listOfItems, DocumentWriteMapper<T> mapper);
+
+    TopDocs search(Query q, int max);
+
+    <T> List<T> search(Query query, int maxRows, DocumentSearchMapper<T> mapper);
+
+    <T> List<T> search(String query, int maxRows, DocumentSearchMapper<T> mapper);
+
+}
+
+interface DocumentWriteMapper<T> {
+
+    @Data
+    @RequiredArgsConstructor
+    class DocumentWrite {
+
+        private final Term term;
+
+        private final Document document;
+
+    }
+
+    DocumentWrite map(T t) throws Exception;
+
+}
+
+interface DocumentSearchMapper<T> {
+
+    T map(Document document) throws Exception;
+
+}
+
+interface IndexWriterCallback {
+
+    void executeWithIndexWriter(IndexWriter iw) throws Exception;
+
+}
