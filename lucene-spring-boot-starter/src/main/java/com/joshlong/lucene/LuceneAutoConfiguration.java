@@ -9,28 +9,30 @@ import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
-
+/**
+ * Simplifies the configuration
+ */
 @Log4j2
 @Configuration
+@EnableConfigurationProperties(LuceneProperties.class)
 class LuceneAutoConfiguration {
 
 	@Bean
-	LuceneTemplate luceneTemplate(@Value("${search.index-directory-resource}") Resource indexDirectory,
-			Analyzer analyzer) throws Exception {
-		return new LuceneTemplate(analyzer, "description", FSDirectory.open(indexDirectory.getFile().toPath()));
+	@ConditionalOnProperty("lucene.search.index-directory-resource")
+	@ConditionalOnMissingBean(LuceneTemplate.class)
+	LuceneTemplate luceneTemplate(LuceneProperties properties, Analyzer analyzer) throws Exception {
+		return new LuceneTemplate(analyzer, "description",
+				FSDirectory.open(properties.getSearch().getIndexDirectoryResource().getFile().toPath()));
 	}
 
 	@Bean
+	@ConditionalOnMissingBean(Analyzer.class)
 	Analyzer analyzer() {
 		return new Analyzer() {
 
