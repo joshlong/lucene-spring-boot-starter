@@ -36,7 +36,7 @@ class LuceneApplicationTest {
 	@BeforeAll
 	void setup() {
 		this.luceneIndexFolder = new File(System.getenv("HOME") + "/Desktop/lucene-index");
-		System.setProperty("search.index-directory-resource", "file://" + luceneIndexFolder.getAbsolutePath());
+		System.setProperty("lucene.search.index-directory-resource", "file://" + luceneIndexFolder.getAbsolutePath());
 		var context = SpringApplication.run(LuceneApplication.class);
 		this.template = context.getBean(LuceneTemplate.class);
 		this.template.write(loadPodcasts(), map -> {
