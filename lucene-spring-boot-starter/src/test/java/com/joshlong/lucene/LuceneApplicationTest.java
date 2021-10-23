@@ -64,7 +64,7 @@ class LuceneApplicationTest {
 	}
 
 	private Collection<Map<String, String>> loadPodcasts() {
-		var responseEntity = restTemplate.exchange(URI.create("https://bootifulpodcast.fm/podcasts.json"),
+		var responseEntity = restTemplate.exchange(URI.create("http://api.bootifulpodcast.fm/site/podcasts"),
 				HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Map<String, String>>>() {
 				});
 		Assert.isTrue(responseEntity.getStatusCode().is2xxSuccessful(), () -> "the HTTP response should be 200x.");
