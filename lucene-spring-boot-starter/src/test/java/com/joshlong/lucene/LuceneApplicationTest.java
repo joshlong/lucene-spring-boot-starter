@@ -67,7 +67,7 @@ class LuceneApplicationTest {
 		var responseEntity = restTemplate.exchange(URI.create("https://bootifulpodcast.fm/podcasts.json"),
 				HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Map<String, String>>>() {
 				});
-		Assert.isTrue(responseEntity.getStatusCode().is2xxSuccessful(), () -> "the HTTP response should be 200x");
+		Assert.isTrue(responseEntity.getStatusCode().is2xxSuccessful(), () -> "the HTTP response should be 200x.");
 		return responseEntity.getBody();
 	}
 
