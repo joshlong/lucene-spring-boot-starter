@@ -19,6 +19,8 @@ public class LuceneProperties {
 	@NoArgsConstructor
 	public static class Search {
 
+		private String defaultIndexField = "description";
+
 		private Resource indexDirectoryResource;
 
 	}

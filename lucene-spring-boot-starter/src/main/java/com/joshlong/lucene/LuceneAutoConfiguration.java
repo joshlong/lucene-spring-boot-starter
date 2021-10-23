@@ -27,7 +27,7 @@ class LuceneAutoConfiguration {
 	@ConditionalOnProperty("lucene.search.index-directory-resource")
 	@ConditionalOnMissingBean(LuceneTemplate.class)
 	LuceneTemplate luceneTemplate(LuceneProperties properties, Analyzer analyzer) throws Exception {
-		return new LuceneTemplate(analyzer, "description",
+		return new LuceneTemplate(analyzer, properties.getSearch().getDefaultIndexField(),
 				FSDirectory.open(properties.getSearch().getIndexDirectoryResource().getFile().toPath()));
 	}
 
