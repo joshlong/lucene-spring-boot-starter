@@ -1,1 +1,2 @@
+org.springframework.nativex.type.NativeConfiguration=com.joshlong.lucene.graalvm.LuceneNativeConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.joshlong.lucene.LuceneAutoConfiguration
