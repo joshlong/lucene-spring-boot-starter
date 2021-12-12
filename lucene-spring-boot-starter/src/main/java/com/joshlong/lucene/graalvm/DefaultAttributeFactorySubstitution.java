@@ -19,7 +19,6 @@ import org.apache.lucene.util.AttributeImpl;
  *
  * @author Gunnar Morling
  */
-@Slf4j
 @TargetClass(className = "org.apache.lucene.util.AttributeFactory$DefaultAttributeFactory")
 public final class DefaultAttributeFactorySubstitution {
 
