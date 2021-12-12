@@ -7,7 +7,6 @@ package com.joshlong.lucene.graalvm;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.util.AttributeImpl;
 
 import java.lang.invoke.MethodHandle;
@@ -17,12 +16,11 @@ import java.lang.invoke.MethodHandle;
  *
  * @author Gunnar Morling
  */
-@Slf4j
+
 @TargetClass(className = "org.apache.lucene.util.AttributeFactory")
 public final class AttributeFactorySubstitution {
 
 	public AttributeFactorySubstitution() {
-		log.info("contributing " + getClass().getName() + " graalvm substitution.");
 	}
 
 	@Substitute

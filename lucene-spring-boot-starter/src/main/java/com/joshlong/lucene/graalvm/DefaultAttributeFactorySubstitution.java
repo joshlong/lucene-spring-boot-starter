@@ -24,7 +24,6 @@ import org.apache.lucene.util.AttributeImpl;
 public final class DefaultAttributeFactorySubstitution {
 
 	public DefaultAttributeFactorySubstitution() {
-		log.info("contributing " + getClass().getName() + " graalvm substitution.");
 
 	}
 

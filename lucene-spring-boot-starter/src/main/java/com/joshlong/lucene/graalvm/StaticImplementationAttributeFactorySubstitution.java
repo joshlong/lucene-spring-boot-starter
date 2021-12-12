@@ -7,7 +7,6 @@ package com.joshlong.lucene.graalvm;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-import lombok.extern.log4j.Log4j2;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.search.BoostAttribute;
 import org.apache.lucene.search.BoostAttributeImpl;
@@ -19,12 +18,10 @@ import org.apache.lucene.util.AttributeImpl;
  *
  * @author Gunnar Morling
  */
-@Log4j2
 @TargetClass(className = "org.apache.lucene.util.AttributeFactory$StaticImplementationAttributeFactory")
 public final class StaticImplementationAttributeFactorySubstitution {
 
 	public StaticImplementationAttributeFactorySubstitution() {
-		log.info("contributing " + getClass().getName() + " graalvm substitution.");
 	}
 
 	@Substitute
