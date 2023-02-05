@@ -3,22 +3,16 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>lucene-spring-boot-starter</artifactId>
-
-
     <parent>
-        <groupId>com.joshlong.lucene</groupId>
+        <groupId>com.joshlong</groupId>
         <artifactId>lucene-spring-boot-starter-root</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
+    <artifactId>lucene-spring-boot-starter</artifactId>
     <properties>
-        <java.version>11</java.version>
-     </properties>
-
+        <java.version>17</java.version>
+    </properties>
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -31,51 +25,4 @@
             </exclusions>
         </dependency>
     </dependencies>
-
-    <build>
-
-    </build>
-
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>libs-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-release
-            </url>
-        </repository>
-        <repository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>libs-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-snapshot
-            </url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>plugins-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-release
-            </url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-snapshot
-            </url>
-        </pluginRepository>
-    </pluginRepositories>
-
 </project>

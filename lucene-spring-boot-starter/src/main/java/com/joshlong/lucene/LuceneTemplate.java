@@ -1,7 +1,7 @@
 package com.joshlong.lucene;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Log4j2
+@Slf4j
 public class LuceneTemplate implements LuceneOperations {
 
 	private final Analyzer analyzer;

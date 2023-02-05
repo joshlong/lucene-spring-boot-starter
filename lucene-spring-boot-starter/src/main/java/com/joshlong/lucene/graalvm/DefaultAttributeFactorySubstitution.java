@@ -7,7 +7,6 @@ package com.joshlong.lucene.graalvm;
 
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.search.BoostAttribute;
 import org.apache.lucene.search.BoostAttributeImpl;

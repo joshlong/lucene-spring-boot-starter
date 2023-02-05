@@ -7,6 +7,8 @@ import org.apache.lucene.index.Term;
 
 public interface DocumentWriteMapper<T> {
 
+	DocumentWrite map(T t) throws Exception;
+
 	@Data
 	@RequiredArgsConstructor
 	class DocumentWrite {
@@ -16,7 +18,5 @@ public interface DocumentWriteMapper<T> {
 		private final Document document;
 
 	}
-
-	DocumentWrite map(T t) throws Exception;
 
 }

@@ -1,28 +1,11 @@
 package com.joshlong.lucene;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ConfigurationProperties("lucene")
-public class LuceneProperties {
+public record LuceneProperties(Search search) {
 
-	private Search search = new Search();
-
-	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class Search {
-
-		private String defaultIndexField = "description";
-
-		private Resource indexDirectoryResource;
-
+	public record Search(String defaultIndexField, Resource indexDirectoryResource) {
 	}
-
 }
