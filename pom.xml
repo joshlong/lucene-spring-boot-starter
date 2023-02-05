@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.1</version>
+        <version>3.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.joshlong.lucene</groupId>
@@ -14,9 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
-        <spring-native.version>0.11.0</spring-native.version>
-        <artifactory-maven-plugin.version>3.2.3</artifactory-maven-plugin.version>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <lucene.version>8.6.2</lucene.version>
         <jsoup.version>1.13.1</jsoup.version>
     </properties>
@@ -24,24 +22,6 @@
         <module>lucene-spring-boot-starter</module>
     </modules>
     <dependencies>
-        <dependency>
-            <groupId>org.graalvm.nativeimage</groupId>
-            <artifactId>svm</artifactId>
-            <version>21.3.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-native</artifactId>
-            <version>${spring-native.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-aot</artifactId>
-            <version>${spring-native.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -75,7 +55,6 @@
             <artifactId>lucene-queries</artifactId>
             <version>${lucene.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -85,50 +64,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jfrog.buildinfo</groupId>
-                <artifactId>artifactory-maven-plugin</artifactId>
-                <version>${artifactory-maven-plugin.version}</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>build-info</id>
-                        <goals>
-                            <goal>publish</goal>
-                        </goals>
-                        <configuration>
-                            <deployProperties>
-                                <build.vcsRevision>
-                                    {{GITHUB_SHA}}
-                                </build.vcsRevision>
-                            </deployProperties>
-                            <publisher>
-                                <contextUrl>
-                                    https://cloudnativejava.jfrog.io/cloudnativejava
-                                </contextUrl>
-                                <username>${env.ARTIFACTORY_USERNAME}</username>
-                                <password>${env.ARTIFACTORY_PASSWORD}</password>
-                                <repoKey>libs-release-local</repoKey>
-                                <snapshotRepoKey>libs-snapshot-local
-                                </snapshotRepoKey>
-                            </publisher>
-                            <buildInfo>
-                                <agentName>Github Actions</agentName>
-                                <buildNumber>{{GITHUB_RUN_ID}}
-                                </buildNumber>
-                                <buildUrl>
-                                    http://travis-ci.org/{{GITHUB_REPOSITORY}}/builds/{{GITHUB_RUN_ID}}
-                                </buildUrl>
-                                <principal>{{USER}}</principal>
-                                <vcsRevision>{{GITHUB_SHA}}</vcsRevision>
-                            </buildInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
-                <version>0.0.29</version>
+                <version>0.0.35</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -142,46 +80,5 @@
         </plugins>
     </build>
 
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>libs-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-release
-            </url>
-        </repository>
-        <repository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>libs-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-snapshot
-            </url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>plugins-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-release
-            </url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-snapshot
-            </url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
