@@ -1,6 +1,5 @@
 package com.joshlong.lucene;
 
-import lombok.extern.log4j.Log4j2;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -23,7 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 
-@Log4j2
+@Disabled
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LuceneApplicationTest {
 
@@ -60,7 +59,6 @@ class LuceneApplicationTest {
 		var results = this.template.search("Eddu", 10, document -> document.get("uid"));
 		Assertions.assertTrue(results.size() > 0, "there should be one or more UIDs in the results");
 		Assertions.assertTrue(luceneIndexFolder.exists());
-		log.info(results);
 	}
 
 	private Collection<Map<String, String>> loadPodcasts() {

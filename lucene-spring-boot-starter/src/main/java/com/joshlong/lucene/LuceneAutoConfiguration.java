@@ -1,6 +1,5 @@
 package com.joshlong.lucene;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -23,7 +22,7 @@ import org.springframework.util.StringUtils;
 /**
  * Simplifies the configuration
  */
-@Slf4j
+
 @Configuration
 @ImportRuntimeHints(LuceneAutoConfiguration.LuceneHints.class)
 @EnableConfigurationProperties(LuceneProperties.class)

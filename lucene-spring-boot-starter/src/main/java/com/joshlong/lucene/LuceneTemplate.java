@@ -1,7 +1,5 @@
 package com.joshlong.lucene;
 
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -15,11 +13,11 @@ import org.apache.lucene.store.Directory;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Slf4j
 public class LuceneTemplate implements LuceneOperations {
 
 	private final Analyzer analyzer;
@@ -40,16 +38,24 @@ public class LuceneTemplate implements LuceneOperations {
 		this.defaultIndexField = defaultIndexField;
 	}
 
-	@SneakyThrows
 	private IndexReader buildIndexReader() {
-		return DirectoryReader.open(this.indexDirectory);
+		try {
+			return DirectoryReader.open(this.indexDirectory);
+		} //
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	@SneakyThrows
 	private IndexWriter buildIndexWriter() {
-		var iwc = new IndexWriterConfig(analyzer);
-		iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-		return new IndexWriter(this.indexDirectory, iwc);
+		try {
+			var iwc = new IndexWriterConfig(analyzer);
+			iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+			return new IndexWriter(this.indexDirectory, iwc);
+		} //
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private IndexSearcher buildIndexSearcher(IndexReader reader) {
@@ -57,13 +63,12 @@ public class LuceneTemplate implements LuceneOperations {
 	}
 
 	@Override
-	@SneakyThrows
 	public <T> void write(Iterable<T> listOfItems, DocumentWriteMapper<T> mapper) {
 		Assert.notNull(listOfItems, () -> "the collection should be non-null");
 		this.write(iw -> {
 			for (var item : listOfItems) {
 				var write = mapper.map(item);
-				iw.updateDocument(write.getTerm(), write.getDocument());
+				iw.updateDocument(write.term(), write.document());
 			}
 		});
 	}
@@ -79,34 +84,47 @@ public class LuceneTemplate implements LuceneOperations {
 	}
 
 	@Override
-	@SneakyThrows
 	public <T> List<T> search(Query query, int maxResults, DocumentSearchMapper<T> mapper) {
-		var search = this.search(query, maxResults);
-		var results = new ArrayList<T>();
-		for (var sd : search.scoreDocs) {
-			var doc = searcher.get().doc(sd.doc);
-			var map = mapper.map(doc);
-			results.add(map);
+		try {
+			var search = this.search(query, maxResults);
+			var results = new ArrayList<T>();
+			for (var sd : search.scoreDocs) {
+				var doc = searcher.get().doc(sd.doc);
+				var map = mapper.map(doc);
+				results.add(map);
+			}
+			return results;
+		} //
+		catch (Throwable throwable) {
+			throw new RuntimeException(throwable);
 		}
-		return results;
 	}
 
-	@SneakyThrows
 	public TopDocs search(Query q, int max) {
-		if (this.reader.get() == null) {
-			synchronized (this.monitor) {
-				this.reader.set(buildIndexReader());
-				this.searcher.set(buildIndexSearcher(this.reader.get()));
+		try {
+			if (this.reader.get() == null) {
+				synchronized (this.monitor) {
+					this.reader.set(buildIndexReader());
+					this.searcher.set(buildIndexSearcher(this.reader.get()));
+				}
 			}
+			var indexSearcher = this.searcher.get();
+
+			return indexSearcher.search(q, max);
 		}
-		var indexSearcher = this.searcher.get();
-		return indexSearcher.search(q, max);
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	@SneakyThrows
 	public <T> List<T> search(String query, int max, DocumentSearchMapper<T> mapper) {
-		return search(buildQueryParserFor(this.defaultIndexField, query), max, mapper);
+		try {
+			return search(buildQueryParserFor(this.defaultIndexField, query), max, mapper);
+		} //
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private Query buildQueryParserFor(String field, String queryStr) throws Exception {

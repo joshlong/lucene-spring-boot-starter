@@ -6,17 +6,17 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.2</version>
+        <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.joshlong</groupId>
     <artifactId>lucene-spring-boot-starter-root</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <lucene.version>8.6.2</lucene.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <jsoup.version>1.18.1</jsoup.version>
     </properties>
     <modules>
         <module>lucene-spring-boot-starter</module>
@@ -62,10 +62,6 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
@@ -89,6 +85,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.nativeimage</groupId>
+            <artifactId>svm</artifactId>
+            <version>24.1.0</version> <!-- Replace with the version matching your GraalVM installation -->
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
