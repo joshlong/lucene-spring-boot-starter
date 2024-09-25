@@ -11,8 +11,14 @@
     </parent>
     <groupId>com.joshlong</groupId>
     <artifactId>lucene-spring-boot-starter-root</artifactId>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.13-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <inceptionYear>2021</inceptionYear>
+    <description>
+        An integration with the Lucene full text search engine and Spring Boot.
+    </description>
+    <name>lucene-spring-boot-starter-root</name>
+    <url>https://github.com/joshlong/lucene-spring-boot-starter</url>
     <properties>
         <java.version>21</java.version>
         <lucene.version>8.6.2</lucene.version>
@@ -41,7 +47,7 @@
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-    <distributionManagement>
+    <!--distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
@@ -50,7 +56,7 @@
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -89,7 +95,7 @@
         <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
-            <version>24.1.0</version> <!-- Replace with the version matching your GraalVM installation -->
+            <version>24.1.0</version> 
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -111,66 +117,26 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>libs-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-release
-            </url>
-        </repository>
-        <repository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>libs-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/libs-snapshot
-            </url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>plugins-release</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-release
-            </url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots/>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>
-                https://cloudnativejava.jfrog.io/cloudnativejava/plugins-snapshot
-            </url>
-        </pluginRepository>
-    </pluginRepositories>
-    <!--    -->
     <profiles>
         <profile>
             <id>publish</id>
+            <properties>
+                <altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>
+            </properties>
             <build>
                 <plugins>
-
-
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.12</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-
+                    <!-- <plugin>
+                         <groupId>org.sonatype.plugins</groupId>
+                         <artifactId>nexus-staging-maven-plugin</artifactId>
+                         <version>1.6.12</version>
+                         <extensions>true</extensions>
+                         <configuration>
+                             <serverId>ossrh</serverId>
+                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                         </configuration>
+                     </plugin>
+                     -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -197,6 +163,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!--
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -211,7 +178,44 @@
                             </execution>
                         </executions>
                     </plugin>
-
+                    -->
+                    <plugin>
+                        <groupId>org.jreleaser</groupId>
+                        <artifactId>jreleaser-maven-plugin</artifactId>
+                        <version>1.14.0</version>
+                        <configuration>
+                            <jreleaser>
+                                <release>
+                                    <github>
+                                        <branch>master</branch>
+                                    </github>
+                                </release>
+                                <signing>
+                                    <active>ALWAYS</active>
+                                    <armored>true</armored>
+                                    <mode>FILE</mode>
+                                    <publicKey>${user.home}/.jreleaser/public</publicKey>
+                                    <secretKey>${user.home}/.jreleaser/private</secretKey>
+                                </signing>
+                                <deploy>
+                                    <maven>
+                                        <nexus2>
+                                            <maven-central>
+                                                <active>ALWAYS</active>
+                                                <url>https://s01.oss.sonatype.org/service/local</url>
+                                                <snapshotUrl>
+                                                    https://s01.oss.sonatype.org/content/repositories/snapshots/
+                                                </snapshotUrl>
+                                                <closeRepository>true</closeRepository>
+                                                <releaseRepository>true</releaseRepository>
+                                                <stagingRepositories>target/staging-deploy</stagingRepositories>
+                                            </maven-central>
+                                        </nexus2>
+                                    </maven>
+                                </deploy>
+                            </jreleaser>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
