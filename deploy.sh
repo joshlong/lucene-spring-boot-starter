@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+export MAVEN_GPG_PASSPHRASE=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "gpg-passphrase") | .value' )  
+
 START_DIR=$(cd `dirname $0` && pwd )
 echo "$START_DIR"
 
