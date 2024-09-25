@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.joshlong</groupId>
     <artifactId>lucene-spring-boot-starter-root</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2021</inceptionYear>
     <description>
