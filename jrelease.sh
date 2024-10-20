@@ -4,8 +4,8 @@ export BW_SESSION=${BW_SESSION:-`bw unlock --raw` }
 
 export JRELEASER_GPG_PASSPHRASE=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "gpg-passphrase") | .value' )  
 export JRELEASER_GITHUB_TOKEN=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "github-pat") | .value' ) 
-export JRELEASER_NEXUS2_USERNAME=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "nexus-username") | .value' )
-export JRELEASER_NEXUS2_PASSWORD=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "nexus-password") | .value' )
+export JRELEASER_MAVENCENTRAL_USERNAME=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "maven-central-username") | .value' )
+export JRELEASER_MAVENCENTRAL_PASSWORD=$( bw get item 'joshlong.com-maven-gpg' |  jq -r '.fields[] | select(.name == "maven-central-token") | .value' )
 mkdir -p $HOME/.jreleaser
 
 # you'll need the key id. do gpg --list-keys and note the key id. then: 

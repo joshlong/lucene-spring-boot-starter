@@ -1,4 +1,4 @@
-# JWT Spring Boot Starter
+# Lucene Spring Boot Starter
 
-This provides easy integration for a JWT login endpoint.
+This provides autoconfiguration, a new `LuceneTemplate`, and support for GraalVM native images when using Apache Lucene.
 
