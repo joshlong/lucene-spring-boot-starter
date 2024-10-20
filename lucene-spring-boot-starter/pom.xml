@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.joshlong</groupId>
         <artifactId>lucene-spring-boot-starter-root</artifactId>
-        <version>0.0.14-SNAPSHOT</version>
+        <version>0.0.14</version>
     </parent>
     <url>https://github.com/joshlong/lucene-spring-boot-starter</url>
     <artifactId>lucene-spring-boot-starter</artifactId>
